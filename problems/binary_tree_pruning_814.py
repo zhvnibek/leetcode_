@@ -9,7 +9,13 @@ class TreeNode:
 
 class Solution:
     def pruneTree(self, root: TreeNode) -> TreeNode:
-        pass
+        if root is None:
+            return None
+        root.left = self.pruneTree(root.left)
+        root.right = self.pruneTree(root.right)
+        if root.val == 0 and root.left is None and root.right is None:
+            return None
+        return root
 
     def height(self, node: TreeNode):
         if node is None:
@@ -19,19 +25,28 @@ class Solution:
             r_height = self.height(node.right)
             return l_height + 1 if l_height > r_height else r_height + 1
 
+    def contains_one(self, node: TreeNode) -> bool:
+        if node is None:
+            return False
+        if node.val == 1:
+            return True
+        return self.contains_one(node.left) or self.contains_one(node.right)
+
     def print_bft(self, root: TreeNode) -> None:
-        def print_level(node: TreeNode, l: int) -> None:
+        def print_level(node: TreeNode, level: int) -> None:
             if node is None:
+                print('null->', end='')
                 return
-            if l == 1:
-                print(node.val)
-            elif l > 1:
-                print_level(node.left, l - 1)
-                print_level(node.right, l - 1)
+            if level == 1:
+                print(str(node.val) + '->', end='')
+            elif level > 1:
+                print_level(node.left, level - 1)
+                print_level(node.right, level - 1)
 
         h = self.height(root)
         for i in range(1, h + 1):
             print_level(root, i)
+        print('\n')
 
     def print_inorder(self, root: TreeNode) -> None:
         pass
@@ -44,15 +59,16 @@ class Solution:
 
 if __name__ == '__main__':
     s = Solution()
-    r = TreeNode(1)
-    r.left = TreeNode(2)
-    r.right = TreeNode(3)
-    r.left.left = TreeNode(4)
-    r.left.right = TreeNode(5)
-    r.right.left = TreeNode(6)
-    r.right.right = TreeNode(7)
+    a = r = TreeNode(1)
+    b = r.left = TreeNode(0)
+    c = r.right = TreeNode(1)
+    d = r.left.left = TreeNode(0)
+    e = r.left.right = TreeNode(0)
+    f = r.right.left = TreeNode(0)
+    g = r.right.right = TreeNode(1)
     s.print_bft(r)
     # h = s.height(r)
     # print(h)
-    # ans = s.pruneTree(r)
-    # print(ans)
+    ans = s.pruneTree(r)
+    s.print_bft(ans)
+
